@@ -1,0 +1,17 @@
+Cadastro Livros
+
+1) Cadastrar um livro e autor
+2) Alterar dados do livro e autor
+3) *Estoque para o livro
+	- Adicionar -> quantidade nao pode ser negativa
+	- Retirar -> quantidade nao pode ser negativa
+	- Listar estoque
+
+Estruturas
+
+- Apresentação -> Livros
+- Domain -> Livros.Domain
+- Servicos -> Livros.Services (Regras de negócio)
+- Repositorio -> Livros.Repository (dados em memoria -> List<>)
+
+Apresentacao -> Servicos -> Repositorio -> Domain

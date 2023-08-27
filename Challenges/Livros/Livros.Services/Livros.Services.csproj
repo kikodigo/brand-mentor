@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Livros.Domain\Livros.Domain.csproj" />
+    <ProjectReference Include="..\Livros.Repository\Livros.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
