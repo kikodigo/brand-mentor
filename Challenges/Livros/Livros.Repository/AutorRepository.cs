@@ -13,13 +13,14 @@ namespace Livros.Repository
 
         public AutorRepository()
         {
-            _autores = new List<Autor>() 
+            //_autores = new List<Autor>();
+            _autores = new List<Autor>()
             {
                 //mokcando valores para testes
-                new Autor("Alice"),
-                new Autor("Bob"),
-                new Autor("Charlie"),
-                new Autor("David")
+                new Autor("Rodrigo"){ Email = "Rodrigo@Rodrigo"},
+                new Autor("Caio"){ Email = "Caio@Caio"},
+                new Autor("Shirley"){ Email = "Shirley@Shirley"},
+                new Autor("Carlos"){ Email = "Carlos@Carlos"},
             };
         }
 
@@ -32,10 +33,10 @@ namespace Livros.Repository
         {
             return _autores;
         }
-      
-        public void Atualiar(Autor autor)
+
+        public void Atualiar(string autorIndex, Autor autor)
         {
-            var autorAtual = Obter(autor.Nome);
+            var autorAtual = Obter(autorIndex);
 
             if (autorAtual != null)
             {
@@ -49,11 +50,6 @@ namespace Livros.Repository
             var autor = _autores.SingleOrDefault(s => s.Nome == nome); // Linq -> Single Where Firt Last Sum Min Max Average (AVG)
 
             return autor;
-        }
-
-        public List<Autor>Listar() 
-        {
-            return _autores;
         }
 
         /*

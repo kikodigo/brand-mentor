@@ -1,11 +1,6 @@
 ﻿using Livros.Domain.Data;
 using Livros.Repository;
 using Livros.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Livros.Services
 {
@@ -15,17 +10,32 @@ namespace Livros.Services
 
         public LivroServices()
         {
-            _livroRepository = new LivroRepository();   
+            _livroRepository = new LivroRepository();
         }
 
-        public void Alterar(Livro livro)
+        public void Alterar(long id, Livro livro)
         {
-            _livroRepository.Atualizar(livro);
+            _livroRepository.Atualizar(id, livro);
         }
 
         public void Cadastrar(Livro livro)
         {
-            _livroRepository.Adicionar(livro);  
+            _livroRepository.Adicionar(livro);
+        }
+
+        public List<Livro> ObterTudo()
+        {
+            return _livroRepository.ObterTudo();
+        }
+
+        public Livro ObterPorNome(string nome)
+        {
+            return _livroRepository.ObterPorNome(nome);
+        }
+
+        public Livro ObterPorId(long id)
+        {
+            return _livroRepository.ObterPorId(id);
         }
     }
 }

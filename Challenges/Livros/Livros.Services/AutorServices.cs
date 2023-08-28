@@ -10,12 +10,12 @@ namespace Livros.Services
 
         public AutorServices()
         {
-            _autorRepository = new AutorRepository();   
+            _autorRepository = new AutorRepository();
         }
 
-        public void Alterar(Autor autor)
+        public void Alterar(string autorIndex, Autor autor)
         {
-            _autorRepository.Atualiar(autor);
+            _autorRepository.Atualiar(autorIndex, autor);
         }
 
         public void Cadastrar(Autor autor)
@@ -23,9 +23,9 @@ namespace Livros.Services
             _autorRepository.Adicionar(autor);
         }
 
-        public List<Autor> Listar() 
+        public List<Autor> ObterTudo()
         {
-            return _autorRepository.Listar();
+            return _autorRepository.ObterTudo();
         }
 
         public Autor Obter(string nome)

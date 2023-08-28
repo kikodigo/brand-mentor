@@ -1,9 +1,4 @@
 ﻿using Livros.Domain.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Livros.Repository
 {
@@ -26,16 +21,16 @@ namespace Livros.Repository
             return _livros;
         }
 
-        public void Atualizar(Livro livro)
+        public void Atualizar(long id, Livro livro)
         {
-            var livroAtual = ObterPorId(livro.Id);
+            var livroAtual = ObterPorId(id);
 
             if (livroAtual != null)
             {
                 livroAtual.Autor = livro.Autor;
                 livroAtual.Descricao = livro.Descricao;
                 livroAtual.Isbn = livro.Isbn;
-                livroAtual.Nome = livro.Nome;                
+                livroAtual.Nome = livro.Nome;
             }
         }
 

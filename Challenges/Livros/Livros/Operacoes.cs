@@ -1,11 +1,6 @@
 ﻿using Livros.Domain.Data;
 using Livros.Services;
 using Livros.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Livros
 {
@@ -16,11 +11,12 @@ namespace Livros
 
         public Operacoes()
         {
-            _autorServices = new AutorServices();  
+            _autorServices = new AutorServices();
             _livroServices = new LivroServices();
         }
 
-        #region Autor
+        #region Autor]
+
         public void CadastraAutor(string nome, string email)
         {
             var autor = new Autor(nome)
@@ -31,7 +27,7 @@ namespace Livros
             _autorServices.Cadastrar(autor);
         }
 
-        public Autor? ConsultaAutor(string nome) 
+        public Autor? ConsultaAutor(string nome)
         {
             var autor = _autorServices.Obter(nome);
 
@@ -43,26 +39,27 @@ namespace Livros
         }
 
         public string AlterarAutor(string autorIndex, Autor autor)
-        {   
+        {
             var autorExistente = _autorServices.Obter(autorIndex);
 
             if (autorExistente == null)
                 return "Autor não localizado";
 
-            _autorServices.Alterar(autor);
+            _autorServices.Alterar(autorExistente.Nome, autor);
 
             return "Alteração efetuada com Sucesso";
         }
 
-        public List<Autor> Listar() 
+        public List<Autor> ObterTudoAutor()
         {
-            return _autorServices.Listar();
+            return _autorServices.ObterTudo();
         }
+
         #endregion Autor
 
         #region Livro
 
-        public void CadastrarLivro(long id, string nomeLivro, string Descricao, string isbn, string nomeAutor, string email)
+        public void CadastrarLivro(long id, string nomeLivro, string descricao, string isbn, string nomeAutor, string email)
         {
             var autor = _autorServices.Obter(nomeAutor);
 
@@ -74,14 +71,50 @@ namespace Livros
                 };
             }
 
-            var livro = new Livro(id, nomeLivro, isbn, autor);
+            var livro = new Livro(id, nomeLivro, isbn, autor)
+            {
+                Descricao = descricao
+            };
 
             _livroServices.Cadastrar(livro);
         }
 
-        public void AlterarLivro(Livro livro)
+        public string AlterarLivro(long id, Livro livro)
         {
-            _livroServices.Alterar(livro);
+
+            var livroExistente = _livroServices.ObterPorId(id);
+
+            if (livroExistente == null)
+                return "Autor não localizado";
+
+            _livroServices.Alterar(livroExistente.Id, livro);
+
+            return "Alteração efetuada com Sucesso";
+        }
+
+        public Livro? ConsultaLivro(long id)
+        {
+            var livro = _livroServices.ObterPorId(id);
+
+            if (livro == null)
+                return null;
+
+            return livro;
+        }
+
+        public Livro? ConsultaLivro(string nome)
+        {
+            var livro = _livroServices.ObterPorNome(nome);
+
+            if (livro == null)
+                return null;
+
+            return livro;
+        }
+
+        public List<Livro> ObterTudoLivros()
+        {
+            return _livroServices.ObterTudo();
         }
 
         #endregion Livros

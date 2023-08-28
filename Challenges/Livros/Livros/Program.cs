@@ -1,6 +1,5 @@
 ﻿using Livros;
 using Livros.Domain.Data;
-using System.IO.Pipes;
 
 var operacoes = new Operacoes();
 
@@ -97,7 +96,6 @@ void MenuAutor()
     } while (opMenu != 0);
 }
 
-
 void MenuLivros()
 {
     int opMenu;
@@ -108,6 +106,8 @@ void MenuLivros()
         Console.WriteLine($"Informe a opção desejada \n" +
             $"1 - Cadastrar Livro\n" +
             $"2 - Alterar Livro\n" +
+            $"3 - Consultar Livro por ID\n" +
+            $"4 - Consultar Livro por Nome\n" +
             $"0 - Menu Inicial");
         opMenu = int.Parse(Console.ReadLine());
 
@@ -122,7 +122,15 @@ void MenuLivros()
                 break;
 
             case 3:
-                //listar Livro
+                ConsultarLivroPorId();
+                break;
+
+            case 4:
+                ConsultarLIvroPorNome();
+                break;
+
+            case 5:
+                ListarLivros();
                 break;
 
             default:
@@ -134,16 +142,24 @@ void MenuLivros()
 
 void CadastraAutor()
 {
-    Console.WriteLine("Informe o nome do autor");
+    MenuConstruction("Cadastro de Autor");
+
+    Console.WriteLine("Informe o nome do autor:");
     var nome = Console.ReadLine();
-    Console.WriteLine("Informe o e-mail do autor");
+
+    Console.WriteLine("Informe o e-mail do autor:");
     var email = Console.ReadLine();
+
     operacoes.CadastraAutor(nome, email);
+
+    Loading();
 }
 
 void ConsultarAutor()
 {
-    Console.WriteLine("Informe o nome do Autor que deseja alterar.");
+    MenuConstruction("Consulta de Autor");
+
+    Console.WriteLine("Informe o nome do Autor que deseja consultar:");
     var nome = Console.ReadLine();
     var autor = operacoes.ConsultaAutor(nome);
 
@@ -157,19 +173,21 @@ void ConsultarAutor()
         Console.WriteLine("Autor não localizado!\n");
     }
 
-    Console.WriteLine("Pressione qualquer tecla para seguir");
-    Console.ReadLine();
+    Pause();
 }
+
 void AlterarAutor()
 {
-    var listaAutores = operacoes.Listar();
+    MenuConstruction("Alteração de Autor");
+
+    var listaAutores = operacoes.ObterTudoAutor();
     foreach (var autor in listaAutores)
     {
         Console.WriteLine($"Nome: {autor.Nome}\n" +
             $"E-mail:{autor.Email}\n");
     }
 
-    Console.WriteLine("Informe o nome do Autor acima que deseja alterar.");
+    Console.WriteLine("Informe o nome do Autor acima que deseja alterar:");
     var nomeIndex = Console.ReadLine();
 
     Console.WriteLine("Agora informe o novo nome:");
@@ -184,22 +202,193 @@ void AlterarAutor()
     };
 
     var result = operacoes.AlterarAutor(nomeIndex, novoAutor);
+
     Console.WriteLine(result);
+    Loading();
+
 }
 
 void CadastraLivro()
 {
+    MenuConstruction("Cadastro de Livro");
+
+    Console.WriteLine("Informe o ID do Livro:");
+    long id = long.Parse(Console.ReadLine());
+
+    Console.WriteLine("Informe o Nome do Livro:");
+    string nomeLivro = Console.ReadLine();
+
+    Console.WriteLine("Informe a ISBN do Livro:");
+    string isbn = Console.ReadLine();
+
+    Console.WriteLine("Informe a Descrição do Livro:");
+    string descricao = Console.ReadLine();
+
+    Console.WriteLine("Informe Nome do Autor do Livro:");
+    string nomeAutor = Console.ReadLine();
+
+    Console.WriteLine("Informe o E-mail do Autor do Livro:");
+    var emailAutor = Console.ReadLine();
+
+    operacoes.CadastrarLivro(id, nomeLivro, descricao, isbn, nomeAutor, emailAutor);
+    Loading();
 
 }
 void AlterarLivro()
 {
+    MenuConstruction("Alteração de Livro");
 
+    var livros = operacoes.ObterTudoLivros();
+
+    foreach (var livro in livros)
+    {
+        Console.WriteLine($"Nome do Livro: {livro.Nome}\n" +
+            $"Id: {livro.Id}\n");
+    }
+
+    Console.WriteLine("Informe o ID do livro que deseja alterar:");
+    long id = long.Parse(Console.ReadLine());
+
+    var livroAtual = operacoes.ConsultaLivro(id);
+    if (livroAtual != null)
+    {
+        Console.WriteLine($"Dados Atuais do livro!\n" +
+       $"Id: {livroAtual.Id}\n" +
+       $"Nome: {livroAtual.Nome}\n" +
+       $"Descrição: {livroAtual.Descricao}\n" +
+       $"ISBN: {livroAtual.Isbn}\n" +
+       $"Autor: {livroAtual.Autor.Nome}\n" +
+       $"E-mail Autor: {livroAtual.Autor.Email}");
+    }
+    else
+    {
+        Console.WriteLine($"Id {id} informado não corresponde a nenhum livro");
+        Pause();
+        return;
+    }
+
+
+    Console.WriteLine("Deseja alterar alguma informação, 1 - Sim | Qualquer tecla para cancelar");
+    int op = int.Parse(Console.ReadLine());
+    if (op == 1)
+    {
+        Console.WriteLine("Informe os novos dados a serem alterados. Mantenha em branco as informações que não serão alteradas.");
+
+        Console.WriteLine("Informe o Nome do Livro:");
+        string nomeLivro = Console.ReadLine();
+
+        Console.WriteLine("Informe a ISBN do Livro:");
+        string isbn = Console.ReadLine();
+
+        Console.WriteLine("Informe a Descrição do Livro:");
+        string descricao = Console.ReadLine();
+
+        Console.WriteLine("Informe Nome do Autor do Livro:");
+        string nomeAutor = Console.ReadLine();
+
+        Console.WriteLine("Informe o E-mail do Autor do Livro:");
+        var emailAutor = Console.ReadLine();
+
+
+        var livroAlteracao = new Livro
+            (
+                livroAtual.Id,
+                !string.IsNullOrWhiteSpace(nomeLivro) ? nomeLivro : livroAtual.Nome,
+                !string.IsNullOrWhiteSpace(isbn) ? isbn : livroAtual.Isbn,
+                new Autor(!string.IsNullOrWhiteSpace(nomeAutor) ? nomeAutor : livroAtual.Autor.Nome)
+                {
+                    Email = !string.IsNullOrWhiteSpace(emailAutor) ? emailAutor : livroAtual.Autor.Email
+                }
+            )
+        {
+            Descricao = !string.IsNullOrWhiteSpace(descricao) ? descricao : livroAtual.Descricao
+        };
+
+        operacoes.AlterarLivro(livroAtual.Id, livroAlteracao);
+
+        Loading();
+    }
+    else
+    {
+        Console.WriteLine("Operação Cancelada");
+        Pause();
+    }
 }
-// Autor At
-// Livro Cad 
-// Livro At
 
-// Depois da Operação Efetuada -> volto para o menu inicial
+void ConsultarLivroPorId()
+{
+    MenuConstruction("Consulta de Livro Por ID");
+
+    Console.WriteLine("Informe o ID do livro que deseja Consultar:");
+    long id = long.Parse(Console.ReadLine());
+
+    var livroAtual = operacoes.ConsultaLivro(id);
+    if (livroAtual != null)
+    {
+        Console.WriteLine($"Dados Atuais do livro!\n" +
+       $"Id: {livroAtual.Id}\n" +
+       $"Nome: {livroAtual.Nome}\n" +
+       $"Descrição: {livroAtual.Descricao}\n" +
+       $"ISBN: {livroAtual.Isbn}\n" +
+       $"Autor: {livroAtual.Autor.Nome}\n" +
+       $"E-mail Autor: {livroAtual.Autor.Email}");
+
+        Pause();
+    }
+    else
+    {
+        Console.WriteLine($"Id {id} informado não corresponde a nenhum livro");
+        Pause();
+        return;
+    }
+}
+
+void ConsultarLIvroPorNome()
+{
+    MenuConstruction("Consulta de Livro Por Nome");
+
+
+    Console.WriteLine("Informe o Nome do livro que deseja alterar:");
+    var nome = Console.ReadLine();
+
+    var livroAtual = operacoes.ConsultaLivro(nome);
+    if (livroAtual != null)
+    {
+        Console.WriteLine($"Dados Atuais do livro!\n" +
+       $"Id: {livroAtual.Id}\n" +
+       $"Nome: {livroAtual.Nome}\n" +
+       $"Descrição: {livroAtual.Descricao}\n" +
+       $"ISBN: {livroAtual.Isbn}\n" +
+       $"Autor: {livroAtual.Autor.Nome}\n" +
+       $"E-mail Autor: {livroAtual.Autor.Email}");
+
+        Pause();
+    }
+    else
+    {
+        Console.WriteLine($"Id {nome} informado não corresponde a nenhum livro");
+        Pause();
+        return;
+    }
+}
+
+void ListarLivros()
+{
+    var livros = operacoes.ObterTudoLivros();
+
+    foreach (var livro in livros)
+    {
+        Console.WriteLine($"Dados Atuais do livro!\n" +
+      $"Id: {livro.Id}\n" +
+      $"Nome: {livro.Nome}\n" +
+      $"Descrição: {livro.Descricao}\n" +
+      $"ISBN: {livro.Isbn}\n" +
+      $"Autor: {livro.Autor.Nome}\n" +
+      $"E-mail Autor: {livro.Autor.Email}");
+    }
+
+    Pause();
+}
 
 void MenuConstruction(string menuName)
 {
@@ -211,4 +400,19 @@ void MenuConstruction(string menuName)
     Console.WriteLine(asterisk);
     Console.WriteLine(menuName);
     Console.WriteLine(asterisk + "\n");
+}
+
+void Pause()
+{
+    Console.WriteLine("Pressione qualquer tecla para seguir...");
+    Console.ReadLine();
+}
+
+void Loading()
+{
+    Console.WriteLine("Processando... Aguarde!");
+    Thread.Sleep(2000);
+    Console.WriteLine("Processo Concluido");
+    Thread.Sleep(1000);
+    Pause();
 }
